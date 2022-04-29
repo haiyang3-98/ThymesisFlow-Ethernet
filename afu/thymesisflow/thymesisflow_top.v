@@ -331,7 +331,7 @@ assign      qsfp0_loc_ingress_cons_cred = 1'b0;
 assign      qsfp1_rem_ingress_getall_creds = 1'b0;
 assign      qsfp1_loc_ingress_cons_cred = 1'b0;
 
-
+/*
 aurora_power_on_reset AURORA_RESET_CONTROL0
      (
          .clock                      (serdes_init_clock)
@@ -351,7 +351,7 @@ aurora_power_on_reset AURORA_RESET_CONTROL1
         ,.rpb                       (qsfp1_power_on_rpb)
         ,.sys_out_aurora_r          (1'b0)
      );
-
+*/
 
            
 `ifndef TFMEMORY
@@ -914,6 +914,7 @@ thymesisflow_llc_framer_bram_32B  TFLLC_FRAMER_BRAM0_32B
 
 
 //Aurora Quad transceiver core instance
+/*
 aurora_qsfp0 AURORA_QSFP0_CORE
        (
          .channel_up                (qsfp0_channel_up)
@@ -942,6 +943,93 @@ aurora_qsfp0 AURORA_QSFP0_CORE
         ,.txp                       (qsfp0_tx_p)
         ,.user_clk_out              (qsfp0_usr_clk)
       );
+      */
+
+fpga eth_to_axis(
+    /*
+     * Clock: 300MHz LVDS
+     */
+    .clk(clock),
+    /*
+     * GPIO
+     */
+    .user_led_g(),
+    .user_led_r(),
+    .front_led(),
+    .user_sw(1'b0), //not used
+
+    /*
+     * Ethernet: QSFP28
+     */
+    .qsfp_0_tx_0_p(qsfp0_tx_p[0]),
+    .qsfp_0_tx_0_n(qsfp0_tx_n[0]),
+    .qsfp_0_rx_0_p(qsfp0_rx_p[0]),
+    .qsfp_0_rx_0_n(qsfp0_rx_n[0]),
+    .qsfp_0_tx_1_p(qsfp0_tx_p[1]),
+    .qsfp_0_tx_1_n(qsfp0_tx_n[1]),
+    .qsfp_0_rx_1_p(qsfp0_rx_p[1]),
+    .qsfp_0_rx_1_n(qsfp0_rx_n[1]),
+    .qsfp_0_tx_2_p(qsfp0_tx_p[2]),
+    .qsfp_0_tx_2_n(qsfp0_tx_n[2]),
+    .qsfp_0_rx_2_p(qsfp0_rx_p[2]),
+    .qsfp_0_rx_2_n(qsfp0_rx_n[2]),
+    .qsfp_0_tx_3_p(qsfp0_tx_p[3]),
+    .qsfp_0_tx_3_n(qsfp0_tx_n[3]),
+    .qsfp_0_rx_3_p(qsfp0_rx_p[3]),
+    .qsfp_0_rx_3_n(qsfp0_rx_n[3]),
+    .qsfp_0_mgt_refclk_p(qsfp0_ref_clk_p),
+    .qsfp_0_mgt_refclk_n(qsfp0_ref_clk_n),
+    .qsfp_0_modprs_l(1'b0), //not used
+    .qsfp_0_sel_l(),
+    .qsfp_0_usr_clk(qsfp0_usr_clk),
+
+    .qsfp_1_tx_0_p(qsfp1_tx_p[0]),
+    .qsfp_1_tx_0_n(qsfp1_tx_n[0]),
+    .qsfp_1_rx_0_p(qsfp1_rx_p[0]),
+    .qsfp_1_rx_0_n(qsfp1_rx_n[0]),
+    .qsfp_1_tx_1_p(qsfp1_tx_p[1]),
+    .qsfp_1_tx_1_n(qsfp1_tx_n[1]),
+    .qsfp_1_rx_1_p(qsfp1_rx_p[1]),
+    .qsfp_1_rx_1_n(qsfp1_rx_n[1]),
+    .qsfp_1_tx_2_p(qsfp1_tx_p[2]),
+    .qsfp_1_tx_2_n(qsfp1_tx_n[2]),
+    .qsfp_1_rx_2_p(qsfp1_rx_p[2]),
+    .qsfp_1_rx_2_n(qsfp1_rx_n[2]),
+    .qsfp_1_tx_3_p(qsfp1_tx_p[3]),
+    .qsfp_1_tx_3_n(qsfp1_tx_n[3]),
+    .qsfp_1_rx_3_p(qsfp1_rx_p[3]),
+    .qsfp_1_rx_3_n(qsfp1_rx_n[3]),
+    .qsfp_1_mgt_refclk_p(),
+    .qsfp_1_mgt_refclk_n(),
+    .qsfp_1_modprs_l(1'b0),
+    .qsfp_1_sel_l(),
+    .qsfp_1_usr_clk(qsfp1_usr_clk),
+
+    .qsfp_reset_l(),
+    .qsfp_int_l(1'b0), //not used
+
+    //input and output payload
+    .rx_payload_axis_tdata(qsfp0_rx_tdata),
+    .rx_payload_axis_tkeep(qsfp0_rx_tkeep),
+    .rx_payload_axis_tvalid(qsfp0_rx_tvalid),
+    .rx_payload_axis_tready(qsfp0_rx_tready),
+    .rx_payload_axis_tlast(qsfp0_rx_tlast),
+
+    .tx_payload_axis_tdata(qsfp0_tx_tdata),
+    .tx_payload_axis_tkeep(qsfp0_tx_tkeep),
+    .tx_payload_axis_tvalid(qsfp0_tx_tvalid),
+    .tx_payload_axis_tready(qsfp0_tx_tready),
+    .tx_payload_axis_tlast(qsfp0_tx_tlast), 
+
+    //networking parameter
+    // Configuration
+    .local_mac(48'h02_00_00_00_00_00),
+    .local_ip({8'd192, 8'd168, 8'd1,   8'd128}),
+    .gateway_ip({8'd192, 8'd168, 8'd1,   8'd1}),
+    .subnet_mask({8'd255, 8'd255, 8'd255, 8'd0}),
+    .dest_mac(48'h02_00_00_00_00_01), // is not used, discovered by arp instead
+    .dest_ip({8'd192, 8'd168, 8'd1,   8'd129})
+);
 
 //end of QSFP0
 //---------------> QSFP1 NETWORK PIPELINE
@@ -1080,7 +1168,7 @@ thymesisflow_32B_llc_top TFLLC_32B_QSFP1
       ,.serdes_rx_tdata            (qsfp1_rx_tdata)
       ,.serdes_rx_tkeep            (qsfp1_rx_tkeep)
       ,.serdes_rx_tlast            (qsfp1_rx_tlast)
-      ,.serdes_rx_tvalid           (qsfp1_rx_tvalid)
+      ,.serdes_rx_tvalid           (1'b0) // set to be always invalid instead of qsfp1_rx_tvalid
      // CRC check of the delivered flit at serdes  
       ,.serdes_rx_crc_ok           (qsfp1_crc_ok)
       ,.serdes_rx_crc_valid        (qsfp1_crc_valid)
@@ -1108,6 +1196,7 @@ thymesisflow_llc_framer_bram_32B  TFLLC_FRAMER_BRAM1_32B
        );
 
 //Aurora Quad transceiver core instance
+/*
 aurora_qsfp1 AURORA_QSFP1_CORE
        (
          .channel_up                (qsfp1_channel_up)
@@ -1136,7 +1225,7 @@ aurora_qsfp1 AURORA_QSFP1_CORE
         ,.txp                       (qsfp1_tx_p)
         ,.user_clk_out              (qsfp1_usr_clk)
       );
-
+*/
 
 
 endmodule

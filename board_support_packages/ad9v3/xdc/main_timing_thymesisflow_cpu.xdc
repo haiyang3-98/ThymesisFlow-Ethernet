@@ -3,7 +3,10 @@
 # but adding anyway for completeness. 
  
 ##QSFP reference clocks 309.25Mhz
-create_clock -period 3.232 -name QSFP0_REF_CLK_P [get_ports QSFP0_REF_CLK_P]
+#create_clock -period 3.232 -name QSFP0_REF_CLK_P [get_ports QSFP0_REF_CLK_P]
+
+#161.1328125 MHZ
+create_clock -period 6.206 -name QSFP0_REF_CLK_P [get_ports QSFP0_REF_CLK_P]
 
 
 #set false path between aurora reset module (clock domain clock_100) and actual reset pins on aurora module.
