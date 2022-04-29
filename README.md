@@ -1,3 +1,7 @@
+Still in Progress
+# Parameters of the Ethernet interface
+Remember to set the appropriate network parameters for each different node, starting around line 1025 of thymesisflow_top.v
+
 # Welcome to the Home of ThymesisFlow
 ThymesisFlow is a HW-SW co-designed prototype enabling
 hardware disaggregation of compute resources on POWER9 processor systems.
