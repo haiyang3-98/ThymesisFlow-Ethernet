@@ -1,3 +1,11 @@
+Still in Progress
+# The Ethernet interface
+The new design uses the eth module in verilog-ethernet/example/ADM_PCIE_9V3/fpga_25g.
+
+QSFP ref clock is downgraded to 161Mhz. Appropriate changes should be made in the driver. 
+
+Remember to set the appropriate network parameters for each different node, starting around line 1025 of thymesisflow_top.v
+
 # Welcome to the Home of ThymesisFlow
 ThymesisFlow is a HW-SW co-designed prototype enabling
 hardware disaggregation of compute resources on POWER9 processor systems.
