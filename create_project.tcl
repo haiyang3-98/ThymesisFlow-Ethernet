@@ -828,7 +828,6 @@ if {($afu eq "thymesisflow")} {
 
 # Create axis_eth interface
 if {($afu eq "thymesisflow")} {
-  add_files -fileset sources_1 ${origin_dir}/verilog-ethernet/example/ADM_PCIE_9V3/fpga_25g/fpga/defines.v
   add_files -fileset sources_1 ${origin_dir}/verilog-ethernet/example/ADM_PCIE_9V3/fpga_25g/rtl/fpga.v
   add_files -fileset sources_1 ${origin_dir}/verilog-ethernet/example/ADM_PCIE_9V3/fpga_25g/rtl/fpga_core.v
   add_files -fileset sources_1 ${origin_dir}/verilog-ethernet/example/ADM_PCIE_9V3/fpga_25g/rtl/eth_xcvr_phy_wrapper.v
