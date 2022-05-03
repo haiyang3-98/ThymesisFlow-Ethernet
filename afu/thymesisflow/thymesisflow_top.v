@@ -898,6 +898,7 @@ thymesisflow_32B_llc_top TFLLC_32B_QSFP0
       ,.framer_bram_wen            (framer_bram_wen0)
      );
 
+assign qsfp0_crc_valid = qsfp0_rx_tlast;
 //TFLLC_32B BRAM below
 //The module below is a xilinx bram generator module created by 
 //../ip/thymesisflow_llc_bram.tcl
@@ -1014,6 +1015,7 @@ fpga eth_to_axis(
     .rx_payload_axis_tvalid(qsfp0_rx_tvalid),
     .rx_payload_axis_tready(qsfp0_rx_tready),
     .rx_payload_axis_tlast(qsfp0_rx_tlast),
+    .rx_payload_axis_checksum_OK(qsfp0_crc_ok),
 
     .tx_payload_axis_tdata(qsfp0_tx_tdata),
     .tx_payload_axis_tkeep(qsfp0_tx_tkeep),
