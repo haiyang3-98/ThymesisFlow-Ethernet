@@ -47,7 +47,9 @@ module rmem_afu (
     // -----------------------------------
     // Miscellaneous Ports
     // -----------------------------------
-    input          clock                        
+    input                 freerun_clk_p
+  , input                 freerun_clk_n
+  , input          clock                        
   , input          reset                        // (positive active
   , input    [5:0] ro_afu_index                 // Each AFU instance under a common Function needs a unique index number
    
@@ -299,7 +301,9 @@ wire           tlx_data_tready;
  
 thymesisflow_top TF_TOP (
 
-       .clock	                                (clock                           )
+      .freerun_clk_p                          (freerun_clk_p)
+    , .freerun_clk_n                          (freerun_clk_n)
+     , .clock	                                (clock                           )
       ,.reset_n                                 (reset_n                         )
       ,.serdes_init_clock                       (serdes_init_clock               )
       ,.serdes_start0                           (aurora_start0                   ) 

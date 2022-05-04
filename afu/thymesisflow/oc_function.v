@@ -23,7 +23,9 @@ module oc_function (
     // -----------------------------------
     // Miscellaneous Ports
     // -----------------------------------
-    input          clock_tlx
+    input                 freerun_clk_p
+   ,input                 freerun_clk_n
+  ,  input          clock_tlx
   , input          clock_afu                         
   , input          reset                        
 
@@ -417,7 +419,9 @@ assign reset_afu00 = ( reset == 1'b1        ||
                       (cfg_f1_octrl00_reset_afu == 1'b1 && cfg_f1_octrl00_afu_control_index == 6'b000000) ) ? 1'b1 : 1'b0; 
 
 rmem_afu AFU00 (
-    .clock                                  ( clock_tlx                               )
+    .freerun_clk_p                          (freerun_clk_p)
+  , .freerun_clk_n                          (freerun_clk_n)
+  ,  .clock                                  ( clock_tlx                               )
   , .reset                                  ( reset_afu00                         )  // (positive active)
   , .ro_afu_index                           ( 6'b000000                           )  // This AFU is number 0
    // -----------------------------------

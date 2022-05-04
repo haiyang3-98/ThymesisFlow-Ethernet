@@ -36,7 +36,9 @@
 
 module thymesisflow_top  (
 
-        input              clock
+        input                 freerun_clk_p
+      ,input                 freerun_clk_n
+      ,  input              clock
       , input              reset_n
       //OpenCAPI TLX command flit AXI-S channel
       , input  [162:0]     ocx_tlx_cmd_flit_in_tdata
@@ -94,6 +96,21 @@ module thymesisflow_top  (
       , output [0:3]       qsfp1_tx_p     
 
 );
+
+/*
+wire  clock;
+IBUFGDS #(
+   .DIFF_TERM("FALSE"),
+   .IBUF_LOW_PWR("FALSE")   
+)
+
+clk_300mhz_ibufg_inst (
+   .O   (clock),
+   .I   (freerun_clk_p),
+   .IB  (freerun_clk_n) 
+);
+*/
+
 
 wire           qsfp0_usr_clk;
 wire           qsfp1_usr_clk;

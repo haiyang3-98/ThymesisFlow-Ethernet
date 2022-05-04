@@ -925,7 +925,9 @@ oc_cfg cfg (
 
 
 oc_function oc_func(
-    .clock_tlx                              ( clock_tlx                          )
+    .freerun_clk_p                          (freerun_clk_p)
+  , .freerun_clk_n                          (freerun_clk_n)
+  , .clock_tlx                              ( clock_tlx                          )
   , .clock_afu                              ( clock_afu                          )
   , .reset                                  ( reset                              )  // (positive active)
     // Bus number comes from CFG_SEQ
