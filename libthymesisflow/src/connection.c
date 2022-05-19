@@ -194,7 +194,7 @@ int setup_afu_bimode(connection *conn, uint64_t effective_addr,
     }
 
     log_info_ext("mapping per process mmio space\n");
-    ocxl_err rc =
+    rc =
         ocxl_mmio_map(conn->afu, OCXL_PER_PASID_MMIO, &(conn->pp_mmio));
     if (rc != OCXL_OK) {
         log_error_ext("Could not map per process local MMIO region");

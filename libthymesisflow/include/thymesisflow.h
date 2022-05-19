@@ -78,6 +78,20 @@ int attach_compute(const char *circuit_id, const char *afu_name,
                    iport_list *ports, const uint64_t effective_addr,
                    const uint64_t size, int no_hotplug);
 /**
+ *  Setup AFU and attach memory
+ *
+ * @param[in] circuit_id: circuit identifier
+ * @param[in] afu_name: AFU name
+ * @param[in] iport_list: list of ports to be used for the attachemnt (Currently
+ * single port supported)
+ * @param[in] effective_addr: address passed the AFU to attach the remove memory
+ * @param[in] size: size of memory to be allocated
+ * @param[out] error_code
+ */
+int attach_bimode(const char *circuit_id, const char *afu_name,
+                   iport_list *ports, const uint64_t effective_addr,
+                   const uint64_t size, int no_hotplug);
+/**
  * Disconnect and free allocated memory
  *
  * @param[in] circuit_id: circuit identifier

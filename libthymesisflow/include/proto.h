@@ -157,6 +157,15 @@ char *marshal_detach_compute_request(const char *circuitid);
 char *proto_attach_compute(const char *msg);
 
 /**
+ * Perform the steps required to setup a new thymesisflow on the compute node
+ *
+ * @param[in] msg: array containing the marshalled request
+ * @param[out] msg: array containing the marshalled response
+ */
+char *proto_attach_bimode(const char *msg);
+
+
+/**
  * Perform the steps required to setup a new thymesisflow on the memory-stealing
  * node
  *
