@@ -168,6 +168,93 @@ int setup_afu_compute(connection *conn, uint64_t effective_addr,
     return 0;
 }
 
+int setup_afu_bimode(connection *conn, uint64_t effective_addr,
+                      iport_list *ports) {
+#ifndef MOCK
+    ocxl_err rc = ocxl_afu_open(conn->afu_name, &(conn->afu));
+    if (OCXL_OK != rc) {
+        log_error_ext("Could not open AFU '%s' error code %d\n", conn->afu_name,
+                      rc);
+        return ERR_AFU_OPEN;
+    }
+
+    // Enable per-AFU verbose messages
+    /*ocxl_afu_enable_messages((conn->afu), OCXL_ERRORS | OCXL_TRACING);*/
+    log_info_ext("attaching afu to address space\n");
+    if (OCXL_OK != ocxl_afu_attach((conn->afu), OCXL_ATTACH_FLAGS_NONE)) {
+        log_error_ext("Could not attach afu");
+        return ERR_AFU_ATTACH;
+    }
+
+    log_info_ext("mappin global mmio space\n");
+    if (OCXL_OK !=
+        ocxl_mmio_map((conn->afu), OCXL_GLOBAL_MMIO, &conn->global)) {
+        log_error_ext("Could not map the AFU MMIO region");
+        return ERR_MMIO_MAP_GLOBAL;
+    }
+
+    log_info_ext("mapping per process mmio space\n");
+    ocxl_err rc =
+        ocxl_mmio_map(conn->afu, OCXL_PER_PASID_MMIO, &(conn->pp_mmio));
+    if (rc != OCXL_OK) {
+        log_error_ext("Could not map per process local MMIO region");
+        return ERR_MMIO_MAP_LOCAL;
+    }
+
+    global_mmio_control ctrl;
+    ctrl.reg.test_enable = 1;
+    ctrl.reg.trigger_sfw_intrp = 0;
+    ctrl.reg.ignore_nomatch_on_read = 0;
+    ctrl.reg.unassigned1 = 0;
+    ctrl.reg.enable_pipeline = 0;
+
+    log_info_ext("enabling and sending assign tag cmd\n");
+    rc =
+        ocxl_mmio_write64(conn->global, 0x0, OCXL_MMIO_LITTLE_ENDIAN, ctrl.val);
+    if (rc != OCXL_OK) {
+        log_error_ext("Failed to write ctrl register\n");
+        return ERR_WRITE_CTRL_REGISTER;
+    }
+    ocxl_enable_messages(OCXL_ERRORS | OCXL_TRACING);
+
+    log_info_ext("Enabling network\n");
+    rc = ocxl_mmio_write64(conn->global, 0x78, OCXL_MMIO_LITTLE_ENDIAN, 0x1);
+    if (rc != OCXL_OK) {
+        log_error_ext("Failed enabling network\n");
+        return ERR_ENABLING_NETWORK;
+    }
+
+    /*
+    log_info_ext("Bringing up aurora channel- %x\n", ports->nport);
+    rc = ocxl_mmio_write64(conn->global, AURORA_CTRL, OCXL_MMIO_LITTLE_ENDIAN,
+                           ports->nport);
+    if (rc != OCXL_OK) {
+        log_error_ext("Failed to bring up the AURORA channel\n");
+        return ERR_AURORA_CHAN;
+    } 
+
+    log_info_ext("Brought up aurora channel\n");*/
+
+    rc = ocxl_mmio_write64(
+        conn->global, MEM_SEG0_CONFIG, OCXL_MMIO_LITTLE_ENDIAN,
+        calculate_seg_offset(effective_addr, MEM_SEG0_OFFSET, ports->nport));
+
+    if (rc != OCXL_OK) {
+        log_error_ext("Failed to config memory segment");
+        return ERR_ATTACH_SEG;
+    }
+
+    log_info_ext("Mapped afu port %d...\n", ports->nport);
+
+    log_info_ext("Starting thymesis stats thread\n");
+    start_stats_thread(&(conn->stat_tid), conn->global);
+
+#endif
+    return 0;
+}
+
+
+
 int setup_afu_memory(connection *conn) {
 #ifndef MOCK
     // open connection to AFU

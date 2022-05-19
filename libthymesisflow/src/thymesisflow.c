@@ -273,3 +273,48 @@ int attach_compute(const char *circuit_id, const char *afu_name,
     return hotplug_memory_blocks(size); // add size to
 #endif
 }
+
+int attach_bimode(const char *circuit_id, const char *afu_name,
+                   iport_list *ports, const uint64_t effective_addr,
+                   const uint64_t size, int no_hotplug) {
+
+    if (ports == NULL) {
+        log_error_ext("ports cannot be null\n");
+        return ERR_PORT_UNSUPPORTED;
+    } else if (ports->next != NULL) {
+        log_warn_ext("Only single port setup supported\n");
+        return ERR_PORT_UNSUPPORTED;
+    }
+
+    connection *conn = new_conn(circuit_id, afu_name, size, no_hotplug);
+
+    add_conn(conn);
+#ifdef MOCK
+    log_info_ext("mocking memory attachment on compute side\n");
+    if (no_hotplug == 1)
+        log_info_ext("Request with no_hotplug flag set\n");
+    else if (no_hotplug == 0)
+	log_info_ext("Request without no_hotplug flag set\n");
+    return ATTACH_OK;
+#else
+
+    int open_res = 0;
+    if ((open_res = setup_afu_bimode(conn, effective_addr, ports)) != 0) {
+        return open_res;
+    }
+
+    log_info_ext("AFU %s succesfully opened\n", afu_name);
+
+    // Allow the AURORA channel to finish the setup step
+    // evaluate if we can decrease this value
+    sleep(5);
+
+    if (no_hotplug){
+        log_debug_ext("No need to hoplug this memory chunk");
+        return ATTACH_OK;
+    }
+
+    return hotplug_memory_blocks(size); // add size to
+#endif
+}
+

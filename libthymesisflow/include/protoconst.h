@@ -103,11 +103,15 @@ Possible messages:
 
 #define COMPUTE_ATTACH "compute_attach"
 
+#define BIMODE_ATTACH "bimode_attach"
+
 #define ERROR_ATTACH "error_attach"
 
 #define MRESPONSE_ATTACH "mresponse_attach"
 
 #define CRESPONSE_ATTACH "cresponse_attach"
+
+#define BRESPONSE_ATTACH "bresponse_attach"
 
 #define MEMORY_DETACH "memory_detach"
 

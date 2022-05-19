@@ -356,6 +356,57 @@ char *proto_attach_compute(const char *msg) {
     return response_msg;
 }
 
+char *proto_attach_bimode(const char *msg) {
+
+    log_info("allocating memory and compute side...\n");
+
+    char *circuit_id = new_circuitid();
+    if (get_circuitid(msg, circuit_id) != 0) {
+        log_warn("error fetching circuit from message\n");
+    }
+
+    char *afu_name = new_afu_name();
+    if (get_afu_name(msg, afu_name) != 0) {
+        log_warn("error fetching afu_name\n");
+    }
+
+    iport_list *ports = get_iports(msg);
+
+    uint64_t size = get_size(msg);
+
+    uint64_t ea = get_ea(msg);
+
+    int no_hotplug = get_no_hotplug(msg);
+
+    // uint64_t memsize = get_size(msg);
+
+    log_info("requested compute mode - size %lu - effective address: %lu \n",
+             size, ea);
+
+    int err = attach_bimode(circuit_id, afu_name, ports, ea, size, no_hotplug);
+
+    // error check
+    char *response_msg = (char *)malloc(sizeof(char) * MSG_SIZE);
+
+    if (set_circuitid(response_msg, circuit_id) < 0)
+        log_warn("error setting message circuit id\n");
+
+    if (set_msgtype(response_msg, BRESPONSE_ATTACH) < 0) {
+        log_warn("error setting message type \n");
+    }
+    set_size(response_msg, size);
+    set_afu(response_msg, afu_name);
+    set_iports(response_msg, ports);
+    set_status(response_msg, err);
+    free_iport_list(ports);
+
+    free(circuit_id);
+    free(afu_name);
+    return response_msg;
+}
+
+
+
 char *proto_detach_compute(const char *msg) {
     char *response_msg = (char *)malloc(sizeof(char) * MSG_SIZE);
 
@@ -473,6 +524,26 @@ char *marshal_attach_compute_request(const char *circuit_id, const char *afu,
     set_no_hotplug(request_msg, no_hotplug);
     return request_msg;
 }
+
+char *marshal_attach_bimode_request(const char *circuit_id, const char *afu,
+                                     const iport_list *ports,
+                                     const uint64_t memsize,
+                                     const uint64_t ea,
+                                     int no_hotplug) {
+    char *request_msg = (char *)malloc(sizeof(char) * MSG_SIZE);
+    if (set_circuitid(request_msg, circuit_id) < 0)
+        log_warn("error setting message circuit id\n");
+    if (set_msgtype(request_msg, BIMODE_ATTACH) < 0) {
+        log_warn("error setting message type \n");
+    }
+    set_afu(request_msg, afu);
+    set_iports(request_msg, ports);
+    set_size(request_msg, memsize);
+    set_ea(request_msg, ea);
+    set_no_hotplug(request_msg, no_hotplug);
+    return request_msg;
+}
+
 
 void unmarshal_response(char *msg, pmessage *rsp) {
 

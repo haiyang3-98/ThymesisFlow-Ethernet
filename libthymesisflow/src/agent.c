@@ -25,6 +25,9 @@ void handle_request(int cfd) {
         } else if (strncmp(msgtype, COMPUTE_DETACH, MSGTYPE_SIZE) == 0) {
             response_msg = proto_detach_compute(msg);
 
+        } else if (strncmp(msgtype, BIMODE_ATTACH, MSGTYPE_SIZE) == 0) {
+            response_msg = proto_attach_bimode(msg);
+
         } else {
             log_warn("unknown mode %s\n", msgtype);
             response_msg = set_unknown_mode_response(msg);

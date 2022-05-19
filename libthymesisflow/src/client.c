@@ -87,3 +87,19 @@ pmessage send_attach_compute_msg(const char *circuitid, const char *afu,
     free(msg);
     return rsp;
 }
+
+pmessage send_attach_bimode_msg(const char *circuitid, const char *afu,
+                                 const iport_list *ports, const uint64_t size,
+                                 const uint64_t ea, int no_hotplug, const char *sock_path) {
+
+    char *msg = marshal_attach_bimode_request(circuitid, afu, ports, size, ea, no_hotplug);
+
+    pmessage rsp = send_cmd(msg, sock_path);
+
+    log_debug("circuitid: %s - type: %s - afu %s - size %lu  - status: %d\n",
+              rsp.circuitid, rsp.msgtype, rsp.afu, rsp.size, rsp.status);
+
+    free(msg);
+    return rsp;
+}
+
