@@ -132,7 +132,7 @@ int set_msgtype(char *msg, const char *msgtype) {
         strcmp(msgtype, MRESPONSE_ATTACH) != 0 &&
         strcmp(msgtype, MRESPONSE_DETACH) != 0 &&
         strcmp(msgtype, BRESPONSE_ATTACH) != 0 &&
-        strcmp(msgtype, BIMODE_ATTACH) != 0 && ) {
+        strcmp(msgtype, BIMODE_ATTACH) != 0 ) {
         return ERR_MSGTYPE;
     }
     memcpy(msg + MSGTYPE_OFFSET, msgtype, MSGTYPE_SIZE);
