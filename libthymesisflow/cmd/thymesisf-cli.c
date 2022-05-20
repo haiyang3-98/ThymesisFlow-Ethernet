@@ -126,16 +126,16 @@ int handle_bimode(const char *cid, const char *afu,
         return EXIT_FAILURE;
     }
 
-    log_info("attaching memory and compute - size: %lu - using effective address: %lu\n",
-             size, ea);
+    log_info("attaching memory and compute - size: %lu",
+             size);
 
-    pmessage cresp = send_attach_compute_msg(cid, afu, pl, size, no_hotplug, sock_path);
+    pmessage bresp = send_attach_bimode_msg(cid, afu, pl, size, no_hotplug, sock_path);
 
-    if (cresp.status == 100) {
-        log_info("Successfully attached compute connection\n");
+    if (bresp.status == 100) {
+        log_info("Successfully attached memory and compute connection EA: 0x%lx\n", mresp.ea);
         return 0;
     } else {
-        log_info("error allocating memory : %d\n", cresp.status);
+        log_info("error allocating memory : %d\n", bresp.status);
         return 1;
     }
 }

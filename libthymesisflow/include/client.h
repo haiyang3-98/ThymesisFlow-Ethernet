@@ -71,7 +71,7 @@ pmessage send_attach_compute_msg(const char *circuitid, const char *afu,
  * @param[in] sock_path: path to the linux socket
  * @param[out] pmessage unmarshalled response from the server
  */
-pmessage send_attach_bimode_msg(const char *circuitid, const char *afu, const uint64_t size,
+pmessage send_attach_bimode_msg(const char *circuitid, const char *afu, const iport_list *ports, const uint64_t size,
                                  int no_hotplug, const char *sock_path);
 
 

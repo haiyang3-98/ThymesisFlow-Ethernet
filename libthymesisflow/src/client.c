@@ -88,10 +88,11 @@ pmessage send_attach_compute_msg(const char *circuitid, const char *afu,
     return rsp;
 }
 
-pmessage send_attach_bimode_msg(const char *circuitid, const char *afu,const uint64_t size,
+pmessage send_attach_bimode_msg(const char *circuitid, const char *afu,
+                                const iport_list *ports, const uint64_t size,
                                  int no_hotplug, const char *sock_path) {
 
-    char *msg = marshal_attach_bimode_request(circuitid, afu, size, no_hotplug);
+    char *msg = marshal_attach_bimode_request(circuitid, afu, ports, size, no_hotplug);
 
     pmessage rsp = send_cmd(msg, sock_path);
 
