@@ -112,7 +112,7 @@ int handle_compute_attach(const char *cid, const char *afu,
 
 int handle_bimode(const char *cid, const char *afu,
                           const iport_list *pl, const uint64_t size,
-                          const u_int64_t ea, const char *sock_path, int no_hotplug) {
+                          const char *sock_path, int no_hotplug) {
     if (cid == NULL || strlen(cid) == 0 || size == 0 || pl == NULL ||
         afu == NULL || strlen(afu) == 0 || ea == 0) {
         helper_compute_attach();
@@ -129,7 +129,7 @@ int handle_bimode(const char *cid, const char *afu,
     log_info("attaching memory and compute - size: %lu - using effective address: %lu\n",
              size, ea);
 
-    pmessage cresp = send_attach_compute_msg(cid, afu, pl, size, ea, no_hotplug, sock_path);
+    pmessage cresp = send_attach_compute_msg(cid, afu, pl, size, no_hotplug, sock_path);
 
     if (cresp.status == 100) {
         log_info("Successfully attached compute connection\n");
@@ -285,7 +285,7 @@ int main(int argc, char **argv) {
     } else if (strcmp("detach-compute", command) == 0) {
         return handle_compute_detach(cid, sock_path);
     } else if (strcmp("bimode", command) == 0) {
-        return handle_bimode(cid, afu, pl, size, ea, sock_path, no_hotplug);
+        return handle_bimode(cid, afu, pl, size, sock_path, no_hotplug);
     } else {
         common_helper();
     }

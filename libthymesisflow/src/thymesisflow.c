@@ -298,6 +298,20 @@ int attach_bimode(const char *circuit_id, const char *afu_name,
     return ATTACH_OK;
 #else
 
+    log_info_ext("Allocating aligned memory\n");
+    if (posix_memalign((void **)&conn->ea, CACHE_ALIGNMENT, size) != 0) {
+        log_error_ext("unable to allocate %ld bytes memory\n", size);
+        return 1;
+    }
+    if (mlock(conn->ea, size) < 0) {
+        // error mem lock ERR_MLOCK
+        log_error_ext("cannot mlock memory for circuit - %s\n", circuit_id);
+        return 1;
+    }
+
+    log_info_ext("memsetting to zero\n");
+    memset(conn->ea, '\0', size);
+    
     int open_res = 0;
     if ((open_res = setup_afu_bimode(conn, effective_addr, ports)) != 0) {
         return open_res;

@@ -129,7 +129,6 @@ char *marshal_attach_compute_request(const char *circuitid, const char *afu,
  * @param[out] msg: array containing the marshalled request
  */
 char *marshal_attach_bimode_request(const char *circuitid, const char *afu,
-                                     const iport_list *ports,
                                      const uint64_t memsize, const uint64_t ea, int no_hotplug);
 
 /**
