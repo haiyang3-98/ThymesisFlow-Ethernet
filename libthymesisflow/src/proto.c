@@ -382,11 +382,13 @@ char *proto_attach_bimode(const char *msg) {
 
     // uint64_t memsize = get_size(msg);
 
-    log_info("requested compute mode - size %lu - effective address: %lu \n",
-             size, ea);
+
 
     uint64_t effective_address;
     int err = attach_bimode(circuit_id, afu_name, ports, &effective_address, size, no_hotplug);
+
+    log_info("requested compute mode - size %lu - effective address: %lu \n",
+             size, effective_address);
 
     // error check
     char *response_msg = (char *)malloc(sizeof(char) * MSG_SIZE);
@@ -498,7 +500,7 @@ char *marshal_attach_memory_request(const char *circuit_id, const char *afu,
                                     const uint64_t memsize) {
     char *request_msg = (char *)malloc(sizeof(char) * MSG_SIZE);
 
-    if (set_circuitid(rattach_bimodeuest_msg, MEMORY_ATTACH) < 0) {
+    if (set_circuitid(request_msg, MEMORY_ATTACH) < 0) {
         log_warn("error setting message type \n");
     }
     set_afu(request_msg, afu);
@@ -527,6 +529,7 @@ char *marshal_attach_compute_request(const char *circuit_id, const char *afu,
 }
 
 char *marshal_attach_bimode_request(const char *circuit_id, const char *afu,
+                                    const iport_list *ports,
                                      const uint64_t memsize,
                                      int no_hotplug) {
     char *request_msg = (char *)malloc(sizeof(char) * MSG_SIZE);
@@ -537,6 +540,7 @@ char *marshal_attach_bimode_request(const char *circuit_id, const char *afu,
     }
     set_afu(request_msg, afu);
     set_size(request_msg, memsize);
+    set_iports(request_msg, ports);
     set_no_hotplug(request_msg, no_hotplug);
     return request_msg;
 }
