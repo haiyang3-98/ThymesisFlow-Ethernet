@@ -275,7 +275,7 @@ int attach_compute(const char *circuit_id, const char *afu_name,
 }
 
 int attach_bimode(const char *circuit_id, const char *afu_name,
-                   iport_list *ports, const uint64_t effective_addr,
+                   iport_list *ports, uint64_t *eaptr,
                    const uint64_t size, int no_hotplug) {
 
     if (ports == NULL) {
@@ -311,14 +311,17 @@ int attach_bimode(const char *circuit_id, const char *afu_name,
 
     log_info_ext("memsetting to zero\n");
     memset(conn->ea, '\0', size);
-    
+
+    *eaptr = (uint64_t)conn->ea;
+
     int open_res = 0;
-    if ((open_res = setup_afu_bimode(conn, effective_addr, ports)) != 0) {
+    if ((open_res = setup_afu_bimode(conn, *eaptr, ports)) != 0) {
         return open_res;
     }
 
     log_info_ext("AFU %s succesfully opened\n", afu_name);
 
+    
     // Allow the AURORA channel to finish the setup step
     // evaluate if we can decrease this value
     sleep(5);

@@ -498,10 +498,7 @@ char *marshal_attach_memory_request(const char *circuit_id, const char *afu,
                                     const uint64_t memsize) {
     char *request_msg = (char *)malloc(sizeof(char) * MSG_SIZE);
 
-    if (set_circuitid(request_msg, circuit_id) < 0)
-        log_warn("error setting message circuit id\n");
-
-    if (set_msgtype(request_msg, MEMORY_ATTACH) < 0) {
+    if (set_circuitid(rattach_bimodeuest_msg, MEMORY_ATTACH) < 0) {
         log_warn("error setting message type \n");
     }
     set_afu(request_msg, afu);
