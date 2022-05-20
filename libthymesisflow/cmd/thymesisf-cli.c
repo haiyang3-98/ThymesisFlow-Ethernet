@@ -114,7 +114,7 @@ int handle_bimode(const char *cid, const char *afu,
                           const iport_list *pl, const uint64_t size,
                           const char *sock_path, int no_hotplug) {
     if (cid == NULL || strlen(cid) == 0 || size == 0 || pl == NULL ||
-        afu == NULL || strlen(afu) == 0 || ea == 0) {
+        afu == NULL || strlen(afu) == 0) {
         helper_compute_attach();
         return EXIT_FAILURE;
     }
@@ -132,7 +132,7 @@ int handle_bimode(const char *cid, const char *afu,
     pmessage bresp = send_attach_bimode_msg(cid, afu, pl, size, no_hotplug, sock_path);
 
     if (bresp.status == 100) {
-        log_info("Successfully attached memory and compute connection EA: 0x%lx\n", mresp.ea);
+        log_info("Successfully attached memory and compute connection EA: 0x%lx\n", bresp.ea);
         return 0;
     } else {
         log_info("error allocating memory : %d\n", bresp.status);
