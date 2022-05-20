@@ -89,7 +89,7 @@ int attach_compute(const char *circuit_id, const char *afu_name,
  * @param[out] error_code
  */
 int attach_bimode(const char *circuit_id, const char *afu_name,
-                   iport_list *ports, const uint64_t effective_addr,
+                   iport_list *ports, uint64_t* effective_addr,
                    const uint64_t size, int no_hotplug);
 /**
  * Disconnect and free allocated memory
